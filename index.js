@@ -1,6 +1,4 @@
 #!/usr/bin/env node
-console.log("Hello world");
-
 const { exec: execCallback } = require('child_process');
 const { promisify } = require('util');
 const exec = promisify(execCallback);
