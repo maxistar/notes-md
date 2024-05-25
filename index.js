@@ -29,11 +29,11 @@ async function runACommand(command) {
     try {
         // Run git commit
         const { stdout: commitStdout } = await exec(command);
-        console.log(`command success: ${commitStdout}`);
+        //console.log(`command success: ${commitStdout}`);
     } catch (error) {
-        console.error(`command: Error: ${error}`);
+        //console.error(`command: Error: ${error}`);
         if (error.stderr) {
-            console.error(`Error details: ${error.stderr}`);
+            //console.error(`Error details: ${error.stderr}`);
         }
     }
 }
