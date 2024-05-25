@@ -122,9 +122,10 @@ async function checkStructure() {
 
 async function main() {
     const command = process.argv[2];  // Get the command from arguments
+    let helpString = 'Usage: node gitCommitPush.js [sync|s|index|i|check-links|cl|check-structure|cs]';
 
     if (process.argv.length !== 3) {
-        console.error("should be called like: nmd <command>")
+        console.error(helpString)
         return;
     }
     
@@ -146,7 +147,7 @@ async function main() {
             await checkStructure();
             break;
         default:
-            console.log('Usage: node gitCommitPush.js [sync|command01]');
+            console.log(helpString);
             break;
     }
 }
