@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "NODE_OPTIONS=--experimental-vm-modules node node_modules/jest/bin/jest --env=jsdom",
+    "test:watch": "npm test -- --watch"
   },
   "type": "module",
   "keywords": [],
@@ -12,5 +13,10 @@
     "nmd": "./index.js"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "jest": "^29.2.1",
+    "jest-environment-jsdom": "^29.2.2",
+    "mocha": "^10.1.0"
+  }
 }

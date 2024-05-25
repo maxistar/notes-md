@@ -2,7 +2,7 @@ import NotesIndexer from "../src/notesindexer";
 
 describe('add function', () => {
     test('tags should be stored internally the normal way', () => {
-        const indexer = new NotesIndexer(process.cwd() + '/app/tests/testnotes/source');
+        const indexer = new NotesIndexer(process.cwd() + '/tests/testnotes/source');
         indexer.setTagSynonyms({
             'teg': ["teg1", "tag"]
         })
@@ -19,7 +19,7 @@ describe('add function', () => {
 
 
     test('tags should be stored externaly', () => {
-        const indexer = new NotesIndexer(process.cwd() + '/app/tests/testnotes/source');
+        const indexer = new NotesIndexer(process.cwd() + '/tests/testnotes/source');
         const prefix = indexer.getTagsPrefix("/notes/test")
         expect(prefix).toEqual('');
 
@@ -29,13 +29,13 @@ describe('add function', () => {
     
     
     test('tags should be stored externally', () => {
-        const indexer = new NotesIndexer(process.cwd() + '/app/tests/testnotes/source');
+        const indexer = new NotesIndexer(process.cwd() + '/tests/testnotes/source');
         indexer.setTagSynonyms({
             'teg': ["teg1", "tag"] 
         })
 
         indexer.readNotes();
-        indexer.setNotesFolder(process.cwd() + '/app/tests/testnotes/target');
+        indexer.setNotesFolder(process.cwd() + '/tests/testnotes/target');
     
         indexer.writeIndex();
         indexer.writeTags();
@@ -43,7 +43,7 @@ describe('add function', () => {
     });
 
     test('tags should read backlinks', () => {
-        const indexer = new NotesIndexer(process.cwd() + '/app/tests/testnotes/source');
+        const indexer = new NotesIndexer(process.cwd() + '/tests/testnotes/source');
         indexer.setTagSynonyms({
             'teg': ["teg1", "tag"]
         })
@@ -56,7 +56,7 @@ describe('add function', () => {
     });
     
     test('relative links resolving to absolute', () => {
-        const indexer = new NotesIndexer(process.cwd() + '/app/tests/testnotes/source');
+        const indexer = new NotesIndexer(process.cwd() + '/tests/testnotes/source');
         [['/notes/index.md', '../diary/index.md', '/diary/index.md']].forEach((useCase) => {
             const [filePath,linkPath, expectedResult] = useCase;
             const value = indexer.resolveLink(filePath, linkPath);
@@ -65,7 +65,7 @@ describe('add function', () => {
     });
 
     test('absolute links resolving to relative', () => {
-        const indexer = new NotesIndexer(process.cwd() + '/app/tests/testnotes/source');
+        const indexer = new NotesIndexer(process.cwd() + '/tests/testnotes/source');
         [
             ['/notes/tags/index.md', '/notes/index.md', '../', 7], // ../index.md
             ['/notes/tags/index.md', '/notes/subject/science/index.md', '../', 7], // ../subject/science/index.md

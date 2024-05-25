@@ -2,7 +2,7 @@ import LinksChecker from "../src/linkschecker";
 
 describe('check links', () => {
     test('should count all links', () => {
-        const checker = new LinksChecker(process.cwd() + '/app/tests/testnotes/linkscheck');
+        const checker = new LinksChecker(process.cwd() + '/tests/testnotes/linkscheck');
         checker.checkLinks();
 
         const expectedLinks = {
@@ -18,7 +18,7 @@ describe('check links', () => {
     });
     
     test('should count all files', () => {
-        const checker = new LinksChecker(process.cwd() + '/app/tests/testnotes/linkscheck');
+        const checker = new LinksChecker(process.cwd() + '/tests/testnotes/linkscheck');
         checker.checkLinks();
 
         const expectedFiles = {
@@ -45,7 +45,7 @@ describe('check links', () => {
             ['/diary/index.md', '../note/file.md', '/note/file.md', 'relative link with going up'],
         ]
 
-        const checker = new LinksChecker(process.cwd() + '/app/tests/testnotes/linkscheck');
+        const checker = new LinksChecker(process.cwd() + '/tests/testnotes/linkscheck');
         resolverTestCases.forEach(testCase => {
             const [filePath, linkPath, expectedResult, testName] = testCase 
             test(testName, () => {
@@ -61,7 +61,7 @@ describe('check links', () => {
             ['/diary/index.pdf', false, 'not mark down'],
         ]
 
-        const checker = new LinksChecker(process.cwd() + '/app/tests/testnotes/linkscheck');
+        const checker = new LinksChecker(process.cwd() + '/tests/testnotes/linkscheck');
         resolverTestCases.forEach(testCase => {
             const [filePath, expectedResult, testName] = testCase 
             test(testName, () => {
@@ -72,7 +72,7 @@ describe('check links', () => {
     });
 
     test('should count all files', () => {
-        const checker = new LinksChecker(process.cwd() + '/app/tests/testnotes/linkscheck');
+        const checker = new LinksChecker(process.cwd() + '/tests/testnotes/linkscheck');
         checker.checkLinks();
 
         const expectedList = [
