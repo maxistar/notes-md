@@ -1,8 +1,11 @@
 #!/usr/bin/env node
 
-import NotesIndexer from "./src/notesindexer.js";
 import fs from 'fs';
 import path from 'path';
+import NotesIndexer from "./src/notesindexer.js";
+import LinksChecker from "./src/linkschecker.js";
+import StructureChecker from "./src/structurechecker.js";
+
 
 import { exec as execCallback } from 'child_process';
 import { promisify } from 'util';
@@ -85,6 +88,38 @@ async function indexNotes() {
     console.log("done.")
 }
 
+async function checkLinks() {
+    try {
+        JSON.parse(fs.readFileSync(path.resolve("notes.config.json"), 'utf-8'));
+    } catch (e) {
+        console.error("error reading notes.config.json")
+        console.error(e)
+        return;
+    }
+
+    const linksChecker = new LinksChecker(path.resolve("."))
+    console.log("read links...");
+    linksChecker.checkLinks();
+    console.log("analise links...");
+
+    linksChecker.showReport();
+}
+
+async function checkStructure() {
+    let config;
+    try {
+        config = JSON.parse(fs.readFileSync(path.resolve("notes.config.json"), 'utf-8'));
+    } catch (e) {
+        console.error("error reading notes.config.json")
+        console.error(e)
+        return;
+    }
+    
+    const indexer = new StructureChecker(path.resolve(".", config.folders.notes));
+
+    indexer.checkNotes();
+}
+
 async function main() {
     const command = process.argv[2];  // Get the command from arguments
 
@@ -101,6 +136,14 @@ async function main() {
         case 'i':
         case 'index':
             await indexNotes();
+            break;
+        case 'cl':
+        case 'check-links':
+            await checkLinks();
+            break;
+        case 'cs':
+        case 'check-structure':
+            await checkStructure();
             break;
         default:
             console.log('Usage: node gitCommitPush.js [sync|command01]');

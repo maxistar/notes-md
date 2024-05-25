@@ -14,7 +14,7 @@ class NotesIndexer {
     backLinks = {};
     separator = "### see also:";
     maxOtherLinksNumber = MAX_LINKS_NUMBER;
-    ignoredFolders = ['/history', '/loqseq', '/pages', '/app', '/notes/tags', '/.idea', '/journals', '/.git', '/node_modules'];
+    ignoredFolders = ['/history', '/loqseq', '/pages', '/app', '/src', '/tests', '/notes/tags', '/.idea', '/journals', '/.git', '/node_modules'];
     
 
     constructor(notesFolder) {

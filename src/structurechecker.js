@@ -43,6 +43,8 @@ class StructureChecker {
         //this.foundFiles[folder] = 'd';
         this.listFolderFiles(folder).forEach(file => {
             if (file === 'app') return;
+            if (file === 'src') return;
+            if (file === 'tests') return;
             if (file === 'tags') return;
             if (file === 'node_modules') return;
             if (file[0] === '.') return;

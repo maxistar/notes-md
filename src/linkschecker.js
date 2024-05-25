@@ -49,6 +49,8 @@ class LinksChecker {
         this.foundFiles[folder] = 'd';
         this.listFolderFiles(folder).forEach(file => {
             if (file === 'app') return;
+            if (file === 'src') return;
+            if (file === 'tests') return;
             if (file === 'node_modules') return;
             if (file[0] === '.') return;
             if (this.isFolder(this.filesFolder + '/' + folder + '/' + file)) {
@@ -88,10 +90,10 @@ class LinksChecker {
      * @param filename Starts from slash
      */
     processFile(filename) {
-        this.foundFiles[filename] = 'f';
         if (!this.isMarkdown(filename)) {
             return;
         }
+        this.foundFiles[filename] = 'f';
         try {
             const data = this.readFileContent(this.filesFolder + filename);
 
