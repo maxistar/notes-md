@@ -71,6 +71,7 @@ async function main() {
     }
     
     switch (command) {
+        case 's':
         case 'sync':
             await commitAndPush();
             break;
