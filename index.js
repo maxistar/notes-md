@@ -40,17 +40,24 @@ async function runACommand(command) {
 
 async function commitAndPush() {
     // add files
+    console.log("adding new files if any...")
     await runACommand(`git add *`)
     // commit changes
+    console.log("doing commit to save our changes...")
     await runACommand(`git commit -am"autocommit"`)
     //merge in case of any remote changes
+    console.log("pulling remote changes...")
     await runACommand(`git pull origin master`)
     //add all conflicts if any, IDC
+    console.log("adding files in case conflicts...")
     await runACommand(`git add *`)
     // one more commit if needed
+    console.log("doing commit again to save our changes...")
     await runACommand(`git commit -am"autocommit"`)
     // push the result
+    console.log("pushing updtest to remote...")
     await runACommand(`git push origin master`)
+    console.log("done.")
 }
 
 commitAndPush();
