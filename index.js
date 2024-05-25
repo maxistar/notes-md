@@ -1,10 +1,16 @@
 #!/usr/bin/env node
-const { exec: execCallback } = require('child_process');
-const { promisify } = require('util');
+
+import NotesIndexer from "./src/notesindexer.js";
+import fs from 'fs';
+import path from 'path';
+
+import { exec as execCallback } from 'child_process';
+import { promisify } from 'util';
+
 const exec = promisify(execCallback);
-const commitMessage = "Your commit message here";
-const remote = "origin";
-const branch = "master";
+// const commitMessage = "Your commit message here";
+// const remote = "origin";
+// const branch = "master";
 
 /**
  * #!/data/data/com.termux/files/usr/bin/bash
@@ -58,7 +64,24 @@ async function commitAndPush() {
     console.log("done.")
 }
 
-async function customCommand01() {
+async function indexNotes() {
+    console.log("process folder " + path.resolve("."))
+
+    let config;
+    try {
+        config = JSON.parse(fs.readFileSync(path.resolve("notes.config.json"), 'utf-8'));
+    } catch (e) {
+        console.error("error reading notes.config.json")
+        console.error(e)
+        return;
+    }
+    const indexer = new NotesIndexer(path.resolve("."));
+
+    indexer.setTagSynonyms(config.synonyms);
+    indexer.setNotesSeparator(config.notes.separator);
+    indexer.setMaxOtherLinksNumber(config.notes.maxOtherLinksNumber);
+    indexer.indexPages();
+    
     console.log("done.")
 }
 
@@ -75,8 +98,9 @@ async function main() {
         case 'sync':
             await commitAndPush();
             break;
-        case 'command01':
-            await customCommand01();
+        case 'i':
+        case 'index':
+            await indexNotes();
             break;
         default:
             console.log('Usage: node gitCommitPush.js [sync|command01]');
