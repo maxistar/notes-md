@@ -58,4 +58,4 @@ async function commitAndPush() {
     console.log("done.")
 }
 
-commitAndPush();
+commitAndPush().then(r => {});
