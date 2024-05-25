@@ -53,9 +53,34 @@ async function commitAndPush() {
     console.log("doing commit again to save our changes...")
     await runACommand(`git commit -am"autocommit"`)
     // push the result
-    console.log("pushing updtest to remote...")
+    console.log("pushing updates to remote...")
     await runACommand(`git push origin master`)
     console.log("done.")
+}
+
+async function customCommand01() {
+    console.log("done.")
+}
+
+async function main() {
+    const command = process.argv[2];  // Get the command from arguments
+
+    if (process.argv.length !== 3) {
+        console.error("should be called like: nmd <command>")
+        return;
+    }
+    
+    switch (command) {
+        case 'sync':
+            await commitAndPush();
+            break;
+        case 'command01':
+            await customCommand01();
+            break;
+        default:
+            console.log('Usage: node gitCommitPush.js [sync|command01]');
+            break;
+    }
 }
 
 commitAndPush().then(r => {});
