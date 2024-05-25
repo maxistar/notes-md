@@ -83,4 +83,4 @@ async function main() {
     }
 }
 
-commitAndPush().then(r => {});
+main().then(r => {});
