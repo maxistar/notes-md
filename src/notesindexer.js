@@ -111,12 +111,12 @@ class NotesIndexer {
         const separator = '\n' + this.separator + '\n';
         const lines = data.split(separator);
         const content = lines[0];
-        const regex = /\[.*\]\((.*)\)/g;
+        const regex = /\[.*\]\([^\)]+\)/g;
         const matches = content.match(regex);
 
         if (matches) {
             const linksFound = matches.map(match => {
-                const extractedLink = match.replace(/\[.*\]\((.*)\)/, '$1');
+                const extractedLink = match.replace(/\[.*\]\(([^\)]+)\)/, '$1');
                 if (isLocalLink(extractedLink)) {
                     return this.resolveLink(filename, extractedLink);
                 }

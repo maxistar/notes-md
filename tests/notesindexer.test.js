@@ -18,7 +18,7 @@ describe('add function', () => {
     });
 
 
-    test('tags should be stored externaly', () => {
+    test('tags should be stored externally', () => {
         const indexer = new NotesIndexer(process.cwd() + '/tests/testnotes/source');
         const prefix = indexer.getTagsPrefix("/notes/test")
         expect(prefix).toEqual('');

@@ -97,12 +97,12 @@ class LinksChecker {
         try {
             const data = this.readFileContent(this.filesFolder + filename);
 
-            const regex = /\[.*\]\((.*)\)/g;
+            const regex = /\[.*\]\([^\)]+\)/g;
             const matches = data.match(regex);
 
             if (matches) {
                 const linkFound = matches.map(match => {
-                    const extractedLink = match.replace(/\[.*\]\((.*)\)/, '$1');
+                    const extractedLink = match.replace(/\[.*\]\(([^\)]+)\)/, '$1');
                     if (isLocalLink(extractedLink)) {
                         return extractedLink;
                     }
