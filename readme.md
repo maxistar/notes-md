@@ -26,7 +26,7 @@ Indexing:
 ```shell
 nmd index
 #or
-nmd s
+nmd i
 ```
 
 Check links
