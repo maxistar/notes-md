@@ -1,10 +1,10 @@
 # Notes MD
 
-This is a simple automation tools that can simplify managing of markdowm notes.
+This is a simple automation tools that can simplify managing of markdown notes.
 
 - builds reverse links
-- checks links consistency
-- sychronyses notes with remote repository with one command line
+- Check links consistency
+- synchronises notes with remote repository with one command line
 
 ## Installation
 
