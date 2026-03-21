@@ -34,14 +34,11 @@ const exec = promisify(execCallback);
 
 async function runACommand(command) {
     try {
-        // Run git commit
-        const { stdout: commitStdout } = await exec(command);
-        //console.log(`command success: ${commitStdout}`);
+        const { stdout } = await exec(command);
+        if (stdout?.trim()) console.log(stdout.trim());
     } catch (error) {
-        //console.error(`command: Error: ${error}`);
-        if (error.stderr) {
-            //console.error(`Error details: ${error.stderr}`);
-        }
+        if (error.stderr?.trim()) console.error(error.stderr.trim());
+        else console.error(`Error running: ${command}\n${error.message}`);
     }
 }
 
