@@ -1,5 +1,7 @@
 # Notes MD
 
+![CI](https://github.com/maxistar/notes-md/actions/workflows/ci.yml/badge.svg)
+
 A CLI tool for managing a personal Markdown knowledge base — automatic tag indexes, back-links, link validation and Git sync. Think Obsidian, but plain files and one terminal command.
 
 ## Features
