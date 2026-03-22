@@ -37,29 +37,25 @@ async function runACommand(command) {
         const { stdout } = await exec(command);
         if (stdout?.trim()) console.log(stdout.trim());
     } catch (error) {
-        if (error.stderr?.trim()) console.error(error.stderr.trim());
-        else console.error(`Error running: ${command}\n${error.message}`);
+        const msg = (error.stderr || error.stdout || error.message || '').trim();
+        const isExpected = msg.includes('nothing to commit')
+            || msg.includes('nothing added to commit');
+        if (!isExpected) console.error(msg || `Error running: ${command}`);
     }
 }
 
 async function commitAndPush() {
-    // add files
     console.log("adding new files if any...")
-    await runACommand(`git add *`)
-    // commit changes
-    console.log("doing commit to save our changes...")
+    await runACommand(`git add -A`)
+    console.log("committing changes...")
     await runACommand(`git commit -am"autocommit"`)
-    //merge in case of any remote changes
     console.log("pulling remote changes...")
     await runACommand(`git pull origin master`)
-    //add all conflicts if any, IDC
-    console.log("adding files in case conflicts...")
-    await runACommand(`git add *`)
-    // one more commit if needed
-    console.log("doing commit again to save our changes...")
+    console.log("adding files after merge...")
+    await runACommand(`git add -A`)
+    console.log("committing after merge...")
     await runACommand(`git commit -am"autocommit"`)
-    // push the result
-    console.log("pushing updates to remote...")
+    console.log("pushing to remote...")
     await runACommand(`git push origin master`)
     console.log("done.")
 }
