@@ -2,7 +2,9 @@ import fs from 'fs';
 import { isLocalLink } from './util/is_local_link.js';
 
 
-const MAX_LINKS_NUMBER = 10
+const MAX_LINKS_NUMBER = 10;
+const NOTES_PREFIX = '/notes/';
+const NOTES_PREFIX_LENGTH = NOTES_PREFIX.length;
 
 class NotesIndexer {
     notesFolder = '';
@@ -259,9 +261,9 @@ class NotesIndexer {
     /**
      * Write Index File
      */
-    writeIndex() {
-        const [_, skipCharacters] = ['', 7];
-        fs.writeFile(this.notesFolder + '/index.md', this.formatTags(this.tags, skipCharacters), () => {});
+    async writeIndex() {
+        const skipCharacters = NOTES_PREFIX_LENGTH;
+        await fs.promises.writeFile(this.notesFolder + '/index.md', this.formatTags(this.tags, skipCharacters));
     }
 
     /**
@@ -283,14 +285,14 @@ class NotesIndexer {
      *
      * @param file
      */
-    linkFile(file) {
+    async linkFile(file) {
         try {
             const data = this.readFileContent(this.rootFolder + '/' + file , 'utf8');
             let tagLinksText = '';
             const separator = '\n' + this.separator + '\n';
             const lines = data.split(separator);
             const content = lines[0];
-            const [tagsPrefix, skipCharacters] = [this.getTagsPrefix(file), 7]
+            const [tagsPrefix, skipCharacters] = [this.getTagsPrefix(file), NOTES_PREFIX_LENGTH]
             if (this.fileTags.hasOwnProperty(file)) {
                 // prepare list of relevant pages
                 const tagLinks = [];
@@ -328,7 +330,7 @@ class NotesIndexer {
                         revertLinksText + 
                         tagLinksText;
 
-                fs.writeFile(this.rootFolder + '/' + file, newContent, () => {});
+                await fs.promises.writeFile(this.rootFolder + '/' + file, newContent);
             }
 
         } catch (err) {
@@ -395,19 +397,17 @@ class NotesIndexer {
      * 
      * @folder String '', '/folder'
      */
-    linkNotes(folder = '') {
-        //read files
-        this.listFolderFiles(folder).forEach(file => {
-            if (file === 'index.md') return;
-            if (file === 'tags') return;
+    async linkNotes(folder = '') {
+        for (const file of this.listFolderFiles(folder)) {
+            if (file === 'index.md') continue;
+            if (file === 'tags') continue;
 
             if (this.isFolder(folder + '/' + file)) {
-                // do something with folder
-                this.linkNotes(folder + '/' + file)
-                return;
+                await this.linkNotes(folder + '/' + file);
+                continue;
             }
-            this.linkFile(folder + '/' + file);
-        });
+            await this.linkFile(folder + '/' + file);
+        }
     }
 
     /**
@@ -415,8 +415,9 @@ class NotesIndexer {
      * @param tag
      * @param pages
      */
-    writeTagIndex(tag, pages) {
-        const [tagPrefix, skipCharacters] = ['../', 7]; 
+    async writeTagIndex(tag, pages) {
+        const tagPrefix = '../';
+        const skipCharacters = NOTES_PREFIX_LENGTH;
         const fileName = tag.substring(1);
         const content = [];
         const sortedPages = [...pages].sort();
@@ -429,21 +430,20 @@ class NotesIndexer {
         content.push('\n');
         content.push('[index](../index.md)');
 
-        fs.writeFile(this.notesFolder + '/tags/' + fileName + '.md', content.join('\n'), () => {});
+        await fs.promises.writeFile(this.notesFolder + '/tags/' + fileName + '.md', content.join('\n'));
     }
 
-    writeTags() {
-        for(const tag of Object.keys(this.tags).sort()) {
-            const pages = this.tags[tag];
-            this.writeTagIndex(tag, pages);
+    async writeTags() {
+        for (const tag of Object.keys(this.tags).sort()) {
+            await this.writeTagIndex(tag, this.tags[tag]);
         }
     }
 
-    indexPages() {
+    async indexPages() {
         this.readNotes();
-        this.writeIndex();
-        this.writeTags();
-        this.linkNotes('/notes');
+        await this.writeIndex();
+        await this.writeTags();
+        await this.linkNotes('/notes');
     }
 
     getPageTitle(fileLink, skipCharacters) {
