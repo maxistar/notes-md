@@ -11,31 +11,11 @@ import { exec as execCallback } from 'child_process';
 import { promisify } from 'util';
 
 const exec = promisify(execCallback);
-// const commitMessage = "Your commit message here";
-// const remote = "origin";
-// const branch = "master";
-
-/**
- * #!/data/data/com.termux/files/usr/bin/bash
- *
- * cd /storage/emulated/0/Documents/work
- * git add * > ~/.sync.log
- * git commit -am"autocommit" >> ~/.sync.log
- * git pull origin master >> ~/.sync.log
- * git add * >> ~/.sync.log
- * git commit -am"autocommit" >> ~/.sync.log
- * git push origin master >> ~/.sync.log
- *
- *
- * termux-toast cat ~/.sync.log
- * 
- * @returns {Promise<void>}
- */
+const GIT_ENV = { ...process.env, LANG: 'C', LC_ALL: 'C' };
 
 async function runACommand(command) {
-    const env = { ...process.env, LANG: 'C', LC_ALL: 'C' };
     try {
-        const { stdout } = await exec(command, { env });
+        const { stdout } = await exec(command, { env: GIT_ENV });
         if (stdout?.trim()) console.log(stdout.trim());
     } catch (error) {
         const msg = (error.stderr || error.stdout || error.message || '').trim();
@@ -45,19 +25,61 @@ async function runACommand(command) {
     }
 }
 
+async function gitQuery(command) {
+    try {
+        const { stdout } = await exec(command, { env: GIT_ENV });
+        return stdout.trim();
+    } catch {
+        return '';
+    }
+}
+
+async function getHead() {
+    return gitQuery('git rev-parse HEAD');
+}
+
+async function countChangedFiles(from, to) {
+    if (!from || !to || from === to) return 0;
+    const out = await gitQuery(`git diff --name-only ${from} ${to}`);
+    return out ? out.split('\n').filter(Boolean).length : 0;
+}
+
+async function countFilesAheadOfRemote() {
+    const out = await gitQuery('git diff --name-only @{u} HEAD');
+    return out ? out.split('\n').filter(Boolean).length : 0;
+}
+
 async function commitAndPush() {
-    console.log("adding new files if any...")
+    console.log("adding new files...")
     await runACommand(`git add -A`)
     console.log("committing changes...")
     await runACommand(`git commit -am"autocommit"`)
+
+    console.log("counting files to push...")
+    const filesToPush = await countFilesAheadOfRemote();
+
     console.log("pulling remote changes...")
+    const headBefore = await getHead();
     await runACommand(`git pull origin master`)
+    const headAfter = await getHead();
+    const pulled = await countChangedFiles(headBefore, headAfter);
+    if (pulled > 0) {
+        console.log(`↓ pulled: ${pulled} file(s) changed from remote`);
+    } else {
+        console.log('↓ already up to date');
+    }
+
     console.log("adding files after merge...")
     await runACommand(`git add -A`)
     console.log("committing after merge...")
     await runACommand(`git commit -am"autocommit"`)
+
     console.log("pushing to remote...")
     await runACommand(`git push origin master`)
+    if (filesToPush > 0) {
+        console.log(`↑ pushed: ${filesToPush} file(s) to remote`);
+    }
+
     console.log("done.")
 }
 
