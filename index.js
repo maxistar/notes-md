@@ -33,8 +33,9 @@ const exec = promisify(execCallback);
  */
 
 async function runACommand(command) {
+    const env = { ...process.env, LANG: 'C', LC_ALL: 'C' };
     try {
-        const { stdout } = await exec(command);
+        const { stdout } = await exec(command, { env });
         if (stdout?.trim()) console.log(stdout.trim());
     } catch (error) {
         const msg = (error.stderr || error.stdout || error.message || '').trim();
